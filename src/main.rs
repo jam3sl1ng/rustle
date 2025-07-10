@@ -6,6 +6,14 @@ const ALL_WORDS: &str = include_str!("assets/words.txt");
 const WORD_LENGTH: usize = 5;
 const MAX_ATTEMPTS: usize = 6;
 
+// Rustle game type
+struct RustleGame {
+    dictionary: Vec<String>,
+    word: String,
+    guessed_letters: HashSet<char>,
+    attempts: Vec<String>,
+}
+
 // Format a word by removing whitespace, converting to uppercase, and filtering out non-alphabetic characters.
 fn clean_word(word: &str) -> String {
     word.trim()
@@ -22,6 +30,21 @@ fn words_list() -> Vec<String> {
         .map(clean_word)
         .filter(|line| line.len() == WORD_LENGTH)
         .collect()
+}
+
+// Game constructor
+impl RustleGame {
+    fn new() -> Self {
+        let mut rng = RandomNumberGenerator::new();
+        let dictionary = words_list();
+        let word = rng.random_slice_entry(&dictionary).unwrap().clone();
+        Self {
+            dictionary,
+            word,
+            guessed_letters: HashSet::new(),
+            attempts: Vec::new(),
+        }
+    }
 }
 
 fn main() {
